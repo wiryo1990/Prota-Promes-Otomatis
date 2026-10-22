@@ -1,0 +1,1074 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GENERATOR PROTA & PROMES</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; background-color: #f1f5f9; }
+    
+    /* CSS Khusus Dokumen Preview & Word Export */
+    .doc-preview-container {
+      background: #ffffff;
+      color: #000000;
+      font-family: 'Times New Roman', Times, serif;
+      font-size: 11pt;
+      line-height: 1.3;
+    }
+    
+    .word-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      margin-bottom: 15px;
+    }
+    
+    .word-table th, .word-table td {
+      border: 1px solid #000000;
+      padding: 4px 5px;
+      vertical-align: middle;
+    }
+    
+    .word-table th {
+      font-weight: bold;
+      text-align: center;
+      background-color: #f3f4f6;
+    }
+
+    /* Teks Vertikal Khusus Promes Non-KBM */
+    .vertical-text {
+      writing-mode: vertical-rl;
+      transform: rotate(180deg);
+      text-align: center;
+      white-space: nowrap;
+      font-weight: bold;
+      font-size: 8pt;
+      padding: 6px 2px !important;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    /* Warna Kategori Promes */
+    .bg-non-kbm-gray { background-color: #d1d5db !important; }
+    .bg-sts-red { background-color: #ef4444 !important; color: white !important; }
+    .bg-sas-purple { background-color: #8b5cf6 !important; color: white !important; }
+    .bg-rapor-yellow { background-color: #eab308 !important; color: black !important; }
+    .bg-libur-blue { background-color: #2563eb !important; color: white !important; }
+    .bg-libur-soft { background-color: #e5e7eb !important; } /* Dipergelap sedikit dari f3f4f6 */
+    .bg-mpls-pink { background-color: #ec4899 !important; color: white !important; }
+
+    .tab-btn { transition: all 0.2s ease; }
+    .tab-btn.active {
+      background-color: #ffffff;
+      color: #1e40af;
+      border-color: #3b82f6;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body class="text-slate-800 antialiased min-h-screen flex flex-col">
+
+  <!-- Header Rata Tengah -->
+  <header class="bg-blue-700 text-white py-6 px-4 shadow-md text-center">
+    <div class="max-w-6xl mx-auto">
+      <h1 class="text-2xl md:text-3xl font-extrabold tracking-tight">GENERATOR PROTA & PROMES</h1>
+      <p class="text-sm md:text-base text-blue-100 mt-2 leading-relaxed">
+        Aplikasi ini dikembangkan oleh <strong>Wiryo, S.Pd</strong><br>
+        <span class="italic">Otomatisasi penyusunan Prota & Promes</span>
+      </p>
+    </div>
+  </header>
+
+  <!-- Container Utama -->
+  <main class="max-w-6xl w-full mx-auto p-4 md:p-6 flex-grow">
+    
+    <!-- Tab Navigation Bar -->
+    <div id="navigation-tabs" class="flex flex-wrap justify-center gap-2 md:gap-3 border-b border-slate-300 pb-3 mb-6">
+      <button onclick="switchTab('tab-info')" id="btn-tab-info" class="tab-btn active px-4 py-2.5 rounded-lg text-sm font-semibold border border-transparent bg-slate-200 text-slate-700 hover:bg-white">
+        Data Informasi
+      </button>
+      <button onclick="switchTab('tab-analisis')" id="btn-tab-analisis" class="tab-btn px-4 py-2.5 rounded-lg text-sm font-semibold border border-transparent bg-emerald-100 text-emerald-800 hover:bg-white">
+        Analisis Hari Belajar Efektif
+      </button>
+      <button onclick="switchTab('tab-prota')" id="btn-tab-prota" class="tab-btn px-4 py-2.5 rounded-lg text-sm font-semibold border border-transparent bg-purple-100 text-purple-800 hover:bg-white">
+        Program Tahunan
+      </button>
+      <button onclick="switchTab('tab-promes')" id="btn-tab-promes" class="tab-btn px-4 py-2.5 rounded-lg text-sm font-semibold border border-transparent bg-amber-100 text-amber-800 hover:bg-white">
+        Program Semester
+      </button>
+    </div>
+
+    <!-- Area Form Pengisian -->
+    <div id="form-container" class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+
+      <!-- TAB 1: DATA INFORMASI -->
+      <div id="tab-info" class="tab-content">
+        <div class="flex items-center gap-2 mb-6 border-l-4 border-blue-600 pl-3">
+          <h2 class="text-xl font-bold text-slate-800">Data Informasi</h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">Nama Penyusun (Guru)</label>
+            <input type="text" id="inf_guru_nama" class="w-full p-2.5 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Wiryo, S.Pd">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">NIP Guru</label>
+            <input type="text" id="inf_guru_nip" class="w-full p-2.5 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none" placeholder="19900809 202221 1 003">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">Nama Sekolah</label>
+            <input type="text" id="inf_sekolah" class="w-full p-2.5 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none" placeholder="SD Negeri Teluk Santong">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">Mata Pelajaran</label>
+            <input type="text" id="inf_mapel" class="w-full p-2.5 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Pendidikan Pancasila">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">Fase / Kelas</label>
+            <input type="text" id="inf_kelas" class="w-full p-2.5 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none" placeholder="A / II (dua)">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">Tahun Pelajaran</label>
+            <input type="text" id="inf_tahun" class="w-full p-2.5 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none" placeholder="2026/2027">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">Nama Kepala Sekolah</label>
+            <input type="text" id="inf_kepsek_nama" class="w-full p-2.5 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Fadli Rohul Ihsan, S.Pd">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">NIP Kepala Sekolah</label>
+            <input type="text" id="inf_kepsek_nip" class="w-full p-2.5 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none" placeholder="19840121 200902 1 007">
+          </div>
+          <div class="md:col-span-2">
+            <label class="block text-xs font-bold text-slate-600 mb-1">Tempat, Tanggal Penetapan (Pengesahan)</label>
+            <input type="text" id="inf_tempat_tgl" class="w-full p-2.5 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Teluk Santong, 15 Juli 2026">
+          </div>
+        </div>
+
+        <div class="mt-8 flex justify-end">
+          <button onclick="switchTab('tab-analisis')" class="px-6 py-2.5 bg-slate-800 text-white font-semibold rounded-lg text-sm hover:bg-slate-700 flex items-center gap-2">
+            Selanjutnya &rarr;
+          </button>
+        </div>
+      </div>
+
+      <!-- TAB 2: ANALISIS HARI BELAJAR EFEKTIF -->
+      <div id="tab-analisis" class="tab-content hidden">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 border-l-4 border-emerald-600 pl-3">
+          <h2 class="text-xl font-bold text-slate-800">Analisis Hari Belajar Efektif (Semester 1 & 2)</h2>
+          <div class="bg-emerald-50 text-emerald-800 px-4 py-2 rounded-lg font-bold text-sm border border-emerald-200 shadow-xs">
+            Total Target JP (1 Tahun): <span id="display-total-jp-tahun">0</span> JP
+          </div>
+        </div>
+
+        <div class="mb-5">
+          <label class="block text-xs font-bold text-slate-600 mb-1">Jumlah Pertemuan / Minggu (Berlaku 1 Tahun)</label>
+          <select id="an_hari_per_minggu" onchange="renderJadwalInputs()" class="w-full max-w-xs p-2.5 border rounded-lg text-sm font-semibold bg-white focus:ring-2 focus:ring-emerald-500">
+            <option value="1">1x Pertemuan</option>
+            <option value="2" selected>2x Pertemuan</option>
+            <option value="3">3x Pertemuan</option>
+            <option value="4">4x Pertemuan</option>
+            <option value="5">5x Pertemuan</option>
+            <option value="6">6x Pertemuan</option>
+          </select>
+        </div>
+
+        <!-- Input Hari & JP Dinamis -->
+        <div id="container-jadwal-inputs" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 mb-6 bg-slate-50 p-4 rounded-xl border border-slate-200">
+          <!-- Rendered via JS -->
+        </div>
+
+        <!-- Grid 2 Tabel Semester -->
+        <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
+          
+          <!-- Semester 1 (Ganjil) -->
+          <div class="border rounded-xl p-4 bg-white shadow-xs overflow-x-auto">
+            <h3 class="font-bold text-md text-emerald-800 mb-3 pb-2 border-b">Semester 1 (Ganjil)</h3>
+            <table class="w-full text-xs border-collapse border border-slate-200 min-w-max">
+              <thead id="thead-analisis-sem1"></thead>
+              <tbody id="tbody-analisis-sem1"></tbody>
+            </table>
+          </div>
+
+          <!-- Semester 2 (Genap) -->
+          <div class="border rounded-xl p-4 bg-white shadow-xs overflow-x-auto">
+            <h3 class="font-bold text-md text-emerald-800 mb-3 pb-2 border-b">Semester 2 (Genap)</h3>
+            <table class="w-full text-xs border-collapse border border-slate-200 min-w-max">
+              <thead id="thead-analisis-sem2"></thead>
+              <tbody id="tbody-analisis-sem2"></tbody>
+            </table>
+          </div>
+
+        </div>
+
+        <div class="mt-8 flex justify-between">
+          <button onclick="switchTab('tab-info')" class="px-5 py-2.5 border rounded-lg text-sm font-semibold hover:bg-slate-100">
+            &larr; Kembali
+          </button>
+          <button onclick="switchTab('tab-prota')" class="px-6 py-2.5 bg-slate-800 text-white font-semibold rounded-lg text-sm hover:bg-slate-700">
+            Selanjutnya &rarr;
+          </button>
+        </div>
+      </div>
+
+      <!-- TAB 3: PROGRAM TAHUNAN -->
+      <div id="tab-prota" class="tab-content hidden">
+        <div class="flex items-center gap-2 mb-4 border-l-4 border-purple-600 pl-3">
+          <h2 class="text-xl font-bold text-slate-800">Program Tahunan</h2>
+        </div>
+
+        <div class="p-4 bg-purple-50 text-purple-900 rounded-lg text-xs mb-6 border border-purple-200">
+          <p><strong>Info Otomatisasi:</strong> Alokasi jam pelajaran (JP) secara otomatis disebar merata ke seluruh ATP. Silakan klik tombol <b>+ Tambah Baris</b> untuk menambah ATP baru.</p>
+        </div>
+
+        <!-- Semester 1 -->
+        <div class="mb-8">
+          <div class="flex justify-between items-center mb-3">
+            <h3 class="font-bold text-slate-800 text-sm">Semester 1 (Ganjil) - <span id="badge-prota-s1" class="text-purple-700">0 JP (Total)</span></h3>
+            <button onclick="addATP(1)" class="px-3 py-1.5 bg-purple-100 hover:bg-purple-200 text-purple-800 rounded font-semibold text-xs flex items-center gap-1">+ Tambah Baris</button>
+          </div>
+          <div id="container-atp-sem1" class="space-y-3"></div>
+        </div>
+
+        <!-- Semester 2 -->
+        <div class="mb-6">
+          <div class="flex justify-between items-center mb-3">
+            <h3 class="font-bold text-slate-800 text-sm">Semester 2 (Genap) - <span id="badge-prota-s2" class="text-purple-700">0 JP (Total)</span></h3>
+            <button onclick="addATP(2)" class="px-3 py-1.5 bg-purple-100 hover:bg-purple-200 text-purple-800 rounded font-semibold text-xs flex items-center gap-1">+ Tambah Baris</button>
+          </div>
+          <div id="container-atp-sem2" class="space-y-3"></div>
+        </div>
+
+        <div class="mt-8 flex justify-between">
+          <button onclick="switchTab('tab-analisis')" class="px-5 py-2.5 border rounded-lg text-sm font-semibold hover:bg-slate-100">
+            &larr; Kembali
+          </button>
+          <button onclick="switchTab('tab-promes')" class="px-6 py-2.5 bg-slate-800 text-white font-semibold rounded-lg text-sm hover:bg-slate-700">
+            Selanjutnya &rarr;
+          </button>
+        </div>
+      </div>
+
+      <!-- TAB 4: PROGRAM SEMESTER -->
+      <div id="tab-promes" class="tab-content hidden">
+        <div class="flex items-center gap-2 mb-4 border-l-4 border-amber-600 pl-3">
+          <h2 class="text-xl font-bold text-slate-800">Program Semester</h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6 bg-amber-50 p-4 rounded-xl border border-amber-200">
+          <div>
+            <label class="block text-xs font-bold text-amber-900 mb-1">PILIH SEMESTER PROMES</label>
+            <select id="pm_pilih_semester" class="w-full p-2 border rounded-lg text-sm font-semibold bg-white" onchange="renderPromesWeeks()">
+              <option value="1">Semester 1 (Ganjil)</option>
+              <option value="2">Semester 2 (Genap)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-amber-900 mb-1">SET DEFAULT KETERANGAN / MINGGU</label>
+            <div class="flex gap-2">
+              <select id="pm_default_kbm" class="w-full p-2 border rounded-lg text-sm bg-white">
+                <option value="1x">1x Pertemuan</option>
+                <option value="2x" selected>2x Pertemuan</option>
+                <option value="3x">3x Pertemuan</option>
+                <option value="4x">4x Pertemuan</option>
+                <option value="5x">5x Pertemuan</option>
+                <option value="6x">6x Pertemuan</option>
+                <option value="Libur">Libur</option>
+                <option value="Libur Semester">Libur Semester</option>
+                <option value="MPLS">MPLS</option>
+                <option value="STS">STS (Sumatif Tengah Semester)</option>
+                <option value="SAS">SAS (Sumatif Akhir Semester)</option>
+                <option value="Pembagian Rapor">Pembagian Rapor</option>
+              </select>
+              <button onclick="applyDefaultPromesWeeks()" class="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white font-semibold text-xs rounded-lg whitespace-nowrap">
+                Terapkan Semua
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Grid Input Minggu Per Bulan Promes -->
+        <div id="promes-month-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8"></div>
+
+        <div class="p-4 bg-blue-50 border border-blue-200 rounded-xl text-xs text-blue-900 mb-8 flex items-center justify-between">
+          <span>Sistem akan menyebarkan centang (<strong>v</strong>) secara presisi ke seluruh ATP. Jika ada >1 pertemuan untuk ATP yang sama dalam minggu tersebut, centang (v) akan <b>disusun menurun ke bawah</b>.</span>
+        </div>
+
+        <div class="flex justify-between items-center pt-4 border-t">
+          <button onclick="switchTab('tab-prota')" class="px-5 py-2.5 border rounded-lg text-sm font-semibold hover:bg-slate-100">
+            &larr; Kembali
+          </button>
+          <button onclick="generateDokumenFinal()" class="px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-base shadow-lg flex items-center gap-2 transform active:scale-95 transition-all">
+            Generate Dokumen
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Area Preview Dokumen Final -->
+    <div id="preview-section" class="mt-10 hidden">
+      
+      <!-- Action Bar Preview (Di Atas Dokumen) -->
+      <div class="flex flex-col md:flex-row justify-between items-center gap-4 bg-slate-800 text-white p-4 rounded-t-xl">
+        <div>
+          <h2 class="font-bold text-lg">Hasil Dokumen</h2>
+          <p class="text-xs text-slate-300">Siap diekspor ke MS Word dan dicetak</p>
+        </div>
+        <div class="flex flex-wrap gap-2">
+          <button onclick="backToForm()" class="px-3.5 py-2 bg-slate-600 hover:bg-slate-500 text-white text-xs font-bold rounded-lg flex items-center gap-1 shadow">
+            ✏️ Edit Data
+          </button>
+          <button onclick="exportWord('analisis')" class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-lg flex items-center gap-1 shadow">
+            📄 Download Analisis
+          </button>
+          <button onclick="exportWord('prota')" class="px-3.5 py-2 bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold rounded-lg flex items-center gap-1 shadow">
+            📄 Download Prota
+          </button>
+          <button onclick="exportWord('promes')" class="px-3.5 py-2 bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold rounded-lg flex items-center gap-1 shadow">
+            📄 Download Promes
+          </button>
+        </div>
+      </div>
+
+      <!-- Canvas Tempat Render Tampilan Dokumen -->
+      <div id="document-preview-canvas" class="doc-preview-container p-6 md:p-10 border border-slate-300 shadow-2xl rounded-b-xl overflow-x-auto bg-white text-black">
+        <!-- Rendered via JS -->
+      </div>
+    </div>
+
+  </main>
+
+  <script>
+    // Master State Data
+    let appState = {
+      jmlPertemuan: 2,
+      jadwalConfigs: [
+        { hari: "Senin", jp: 2 },
+        { hari: "Selasa", jp: 2 }
+      ],
+      analisisS1: [
+        { bulan: "Juli",      hariEfektif: [2, 2, 0, 0, 0, 0] },
+        { bulan: "Agustus",   hariEfektif: [4, 4, 0, 0, 0, 0] },
+        { bulan: "September", hariEfektif: [4, 4, 0, 0, 0, 0] },
+        { bulan: "Oktober",   hariEfektif: [4, 4, 0, 0, 0, 0] },
+        { bulan: "November",  hariEfektif: [4, 4, 0, 0, 0, 0] },
+        { bulan: "Desember",  hariEfektif: [1, 1, 0, 0, 0, 0] }
+      ],
+      analisisS2: [
+        { bulan: "Januari",   hariEfektif: [4, 4, 0, 0, 0, 0] },
+        { bulan: "Februari",  hariEfektif: [4, 4, 0, 0, 0, 0] },
+        { bulan: "Maret",     hariEfektif: [4, 4, 0, 0, 0, 0] },
+        { bulan: "April",     hariEfektif: [3, 3, 0, 0, 0, 0] },
+        { bulan: "Mei",       hariEfektif: [4, 4, 0, 0, 0, 0] },
+        { bulan: "Juni",      hariEfektif: [2, 2, 0, 0, 0, 0] }
+      ]
+    };
+
+    let stateATP = {
+      sem1: [
+        { id: 1, atp: "", materi: "", jp: 0 }
+      ],
+      sem2: [
+        { id: 1, atp: "", materi: "", jp: 0 }
+      ]
+    };
+
+    let statePromesWeeks = {
+      sem1: {
+        "Juli": ["Libur Semester", "Libur Semester", "2x", "2x", "2x"],
+        "Agustus": ["2x", "2x", "2x", "2x", "2x"],
+        "September": ["2x", "2x", "STS", "2x", "2x"],
+        "Oktober": ["2x", "2x", "2x", "2x", "2x"],
+        "November": ["2x", "2x", "2x", "2x", "2x"],
+        "Desember": ["SAS", "Pembagian Rapor", "Libur Semester", "Libur Semester", "Libur Semester"]
+      },
+      sem2: {
+        "Januari": ["2x", "2x", "2x", "2x", "2x"],
+        "Februari": ["2x", "2x", "2x", "2x", "2x"],
+        "Maret": ["2x", "2x", "STS", "2x", "2x"],
+        "April": ["2x", "2x", "Libur", "2x", "2x"],
+        "Mei": ["2x", "2x", "2x", "2x", "2x"],
+        "Juni": ["SAS", "Pembagian Rapor", "Libur Semester", "Libur Semester", "Libur Semester"]
+      }
+    };
+
+    const namaHariList = ["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
+    const opsiMingguList = ["1x", "2x", "3x", "4x", "5x", "6x", "Libur", "Libur Semester", "MPLS", "STS", "SAS", "Pembagian Rapor"];
+
+    window.onload = () => {
+      renderJadwalInputs();
+      renderPromesWeeks();
+    };
+
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      document.getElementById(tabId).classList.remove('hidden');
+      document.getElementById('btn-' + tabId).classList.add('active');
+    }
+
+    function backToForm() {
+      document.getElementById('preview-section').classList.add('hidden');
+      document.getElementById('navigation-tabs').classList.remove('hidden');
+      document.getElementById('form-container').classList.remove('hidden');
+    }
+
+    // --- TAB 2: ANALISIS HARI BELAJAR EFEKTIF ---
+    function renderJadwalInputs() {
+      let jml = parseInt(document.getElementById('an_hari_per_minggu').value);
+      appState.jmlPertemuan = jml;
+
+      while(appState.jadwalConfigs.length < jml) {
+        appState.jadwalConfigs.push({ hari: namaHariList[(appState.jadwalConfigs.length) % 6], jp: 2 });
+      }
+      if(appState.jadwalConfigs.length > jml) {
+        appState.jadwalConfigs = appState.jadwalConfigs.slice(0, jml);
+      }
+
+      const container = document.getElementById('container-jadwal-inputs');
+      container.innerHTML = "";
+
+      appState.jadwalConfigs.forEach((cfg, idx) => {
+        let div = document.createElement('div');
+        div.className = "bg-white p-2 rounded border border-slate-200 shadow-2xs";
+        div.innerHTML = `
+          <label class="block text-[10px] font-bold text-slate-500 mb-1">JADWAL KE-${idx+1}</label>
+          <select class="w-full p-1 border rounded text-xs mb-1 font-semibold" onchange="updateJadwalConfig(${idx}, 'hari', this.value)">
+            ${namaHariList.map(h => `<option value="${h}" ${h===cfg.hari?'selected':''}>${h}</option>`).join('')}
+          </select>
+          <div class="flex items-center gap-1">
+            <span class="text-[10px] text-slate-500 font-bold">Jml JP:</span>
+            <input type="number" class="w-full p-1 border rounded text-xs text-center font-bold" value="${cfg.jp}" onchange="updateJadwalConfig(${idx}, 'jp', this.value)">
+          </div>
+        `;
+        container.appendChild(div);
+      });
+
+      calculateAnalisis();
+    }
+
+    function updateJadwalConfig(idx, field, val) {
+      if(field === 'jp') appState.jadwalConfigs[idx].jp = parseInt(val) || 0;
+      else appState.jadwalConfigs[idx].hari = val;
+      calculateAnalisis();
+    }
+
+    function calculateAnalisis() {
+      const jml = appState.jmlPertemuan;
+      let theadHtml = `
+        <tr class="bg-slate-100">
+          <th rowspan="2" class="border p-2">Bulan</th>
+          ${appState.jadwalConfigs.map(c => `<th colspan="2" class="border p-1 text-[11px]">${c.hari}</th>`).join('')}
+        </tr>
+        <tr class="bg-slate-50">
+          ${appState.jadwalConfigs.map(() => `<th class="border p-1 text-[10px]">Hari Efektif</th><th class="border p-1 text-[10px]">Jml JP</th>`).join('')}
+        </tr>
+      `;
+
+      document.getElementById('thead-analisis-sem1').innerHTML = theadHtml;
+      document.getElementById('thead-analisis-sem2').innerHTML = theadHtml;
+
+      let totalJPS1 = 0, totalPertemuanS1 = 0;
+      let totalJPS2 = 0, totalPertemuanS2 = 0;
+
+      // Draw Body Sem 1
+      let tbody1 = "";
+      let sums1_HE = Array(jml).fill(0);
+      let sums1_JP = Array(jml).fill(0);
+
+      appState.analisisS1.forEach((item, monthIdx) => {
+        tbody1 += `<tr><td class="border p-1.5 font-semibold text-slate-700">${item.bulan}</td>`;
+        for(let i=0; i<jml; i++) {
+          let he = item.hariEfektif[i] || 0;
+          let jp = he * appState.jadwalConfigs[i].jp;
+          
+          sums1_HE[i] += he;
+          sums1_JP[i] += jp;
+          totalPertemuanS1 += he;
+          totalJPS1 += jp;
+
+          tbody1 += `
+            <td class="border p-1 text-center"><input type="number" class="w-10 text-center border rounded text-xs" value="${he}" onchange="updateAnalisisVal('analisisS1', ${monthIdx}, ${i}, this.value)"></td>
+            <td class="border p-1 text-center font-bold text-slate-600 text-xs">${jp}</td>
+          `;
+        }
+        tbody1 += `</tr>`;
+      });
+      // Baris Jumlah, Total Pertemuan, Total JP
+      tbody1 += `<tr class="bg-slate-100 font-bold"><td class="border p-1.5 text-right text-xs">Jumlah</td>`;
+      for(let i=0; i<jml; i++){
+        tbody1 += `<td class="border p-1 text-center text-xs">${sums1_HE[i]}</td><td class="border p-1 text-center text-blue-700 text-xs">${sums1_JP[i]}</td>`;
+      }
+      tbody1 += `</tr>
+      <tr class="bg-emerald-50 font-bold"><td class="border p-1.5 text-right text-xs text-emerald-800">Total Pertemuan</td><td colspan="${jml*2}" class="border p-1.5 text-center text-emerald-800">${totalPertemuanS1} Pertemuan</td></tr>
+      <tr class="bg-emerald-100 font-bold"><td class="border p-1.5 text-right text-xs text-emerald-900">Total JP</td><td colspan="${jml*2}" class="border p-1.5 text-center text-emerald-900">${totalJPS1} JP</td></tr>`;
+      
+      document.getElementById('tbody-analisis-sem1').innerHTML = tbody1;
+
+      // Draw Body Sem 2
+      let tbody2 = "";
+      let sums2_HE = Array(jml).fill(0);
+      let sums2_JP = Array(jml).fill(0);
+
+      appState.analisisS2.forEach((item, monthIdx) => {
+        tbody2 += `<tr><td class="border p-1.5 font-semibold text-slate-700">${item.bulan}</td>`;
+        for(let i=0; i<jml; i++) {
+          let he = item.hariEfektif[i] || 0;
+          let jp = he * appState.jadwalConfigs[i].jp;
+          
+          sums2_HE[i] += he;
+          sums2_JP[i] += jp;
+          totalPertemuanS2 += he;
+          totalJPS2 += jp;
+
+          tbody2 += `
+            <td class="border p-1 text-center"><input type="number" class="w-10 text-center border rounded text-xs" value="${he}" onchange="updateAnalisisVal('analisisS2', ${monthIdx}, ${i}, this.value)"></td>
+            <td class="border p-1 text-center font-bold text-slate-600 text-xs">${jp}</td>
+          `;
+        }
+        tbody2 += `</tr>`;
+      });
+      tbody2 += `<tr class="bg-slate-100 font-bold"><td class="border p-1.5 text-right text-xs">Jumlah</td>`;
+      for(let i=0; i<jml; i++){
+        tbody2 += `<td class="border p-1 text-center text-xs">${sums2_HE[i]}</td><td class="border p-1 text-center text-blue-700 text-xs">${sums2_JP[i]}</td>`;
+      }
+      tbody2 += `</tr>
+      <tr class="bg-emerald-50 font-bold"><td class="border p-1.5 text-right text-xs text-emerald-800">Total Pertemuan</td><td colspan="${jml*2}" class="border p-1.5 text-center text-emerald-800">${totalPertemuanS2} Pertemuan</td></tr>
+      <tr class="bg-emerald-100 font-bold"><td class="border p-1.5 text-right text-xs text-emerald-900">Total JP</td><td colspan="${jml*2}" class="border p-1.5 text-center text-emerald-900">${totalJPS2} JP</td></tr>`;
+      
+      document.getElementById('tbody-analisis-sem2').innerHTML = tbody2;
+
+      document.getElementById('display-total-jp-tahun').innerText = totalJPS1 + totalJPS2;
+      document.getElementById('badge-prota-s1').innerText = totalJPS1 + " JP (Total)";
+      document.getElementById('badge-prota-s2').innerText = totalJPS2 + " JP (Total)";
+
+      autoDistributeProtaJP(totalJPS1, totalJPS2);
+    }
+
+    function updateAnalisisVal(semKey, monthIdx, dayIdx, val) {
+      appState[semKey][monthIdx].hariEfektif[dayIdx] = parseInt(val) || 0;
+      calculateAnalisis();
+    }
+
+    // --- TAB 3: PROTA ---
+    function autoDistributeProtaJP(targetJPS1, targetJPS2) {
+      if(stateATP.sem1.length > 0) {
+        let perItem = Math.floor(targetJPS1 / stateATP.sem1.length);
+        let rem = targetJPS1 % stateATP.sem1.length;
+        stateATP.sem1.forEach((item, idx) => {
+          item.jp = perItem + (idx === stateATP.sem1.length - 1 ? rem : 0);
+        });
+      }
+      if(stateATP.sem2.length > 0) {
+        let perItem = Math.floor(targetJPS2 / stateATP.sem2.length);
+        let rem = targetJPS2 % stateATP.sem2.length;
+        stateATP.sem2.forEach((item, idx) => {
+          item.jp = perItem + (idx === stateATP.sem2.length - 1 ? rem : 0);
+        });
+      }
+      renderATPForm();
+    }
+
+    function renderATPForm() {
+      const c1 = document.getElementById('container-atp-sem1');
+      const c2 = document.getElementById('container-atp-sem2');
+
+      c1.innerHTML = ""; c2.innerHTML = "";
+
+      stateATP.sem1.forEach((item, index) => c1.appendChild(createATPRowHTML(item, 'sem1', index)));
+      stateATP.sem2.forEach((item, index) => c2.appendChild(createATPRowHTML(item, 'sem2', index)));
+    }
+
+    function createATPRowHTML(item, sem, index) {
+      const div = document.createElement('div');
+      div.className = "flex gap-2 items-start bg-white p-3 rounded-lg border border-purple-200 shadow-2xs";
+      div.innerHTML = `
+        <span class="font-bold text-xs text-purple-800 w-5 pt-2">${index + 1}.</span>
+        <textarea rows="2" class="flex-grow p-2 border rounded text-xs focus:ring-2 focus:ring-purple-300 outline-none" placeholder="Tulis / Paste ATP di sini..." onchange="updateATPVal('${sem}', ${item.id}, 'atp', this.value)">${item.atp}</textarea>
+        <textarea rows="2" class="w-1/3 p-2 border rounded text-xs focus:ring-2 focus:ring-purple-300 outline-none" placeholder="Materi (Opsional)..." onchange="updateATPVal('${sem}', ${item.id}, 'materi', this.value)">${item.materi}</textarea>
+        <div class="flex flex-col items-center gap-1 w-20">
+          <div class="flex items-center gap-1">
+            <input type="number" class="w-12 p-1.5 border rounded text-xs font-bold text-center bg-purple-50" value="${item.jp}" onchange="updateATPVal('${sem}', ${item.id}, 'jp', this.value)">
+            <span class="text-[10px] font-bold text-slate-500">JP</span>
+          </div>
+          ${index > 0 ? `<button onclick="removeATP('${sem}', ${item.id})" class="text-red-500 hover:text-red-700 text-xs font-bold mt-1">Hapus</button>` : ''}
+        </div>
+      `;
+      return div;
+    }
+
+    function updateATPVal(sem, id, field, val) {
+      const item = stateATP[sem].find(x => x.id === id);
+      if(item) {
+        if(field === 'jp') item[field] = parseInt(val) || 0;
+        else item[field] = val;
+      }
+    }
+
+    function addATP(semNum) {
+      const semKey = semNum === 1 ? 'sem1' : 'sem2';
+      stateATP[semKey].push({ id: Date.now(), atp: "", materi: "", jp: 0 });
+      calculateAnalisis(); 
+    }
+
+    function removeATP(semKey, id) {
+      stateATP[semKey] = stateATP[semKey].filter(x => x.id !== id);
+      calculateAnalisis();
+    }
+
+    // --- TAB 4: PROMES ---
+    function renderPromesWeeks() {
+      const semNum = document.getElementById('pm_pilih_semester').value;
+      const semKey = semNum === "1" ? "sem1" : "sem2";
+      const listBulan = semNum === "1" ? ["Juli", "Agustus", "September", "Oktober", "November", "Desember"] : ["Januari", "Februari", "Maret", "April", "Mei", "Juni"];
+
+      const grid = document.getElementById('promes-month-grid');
+      grid.innerHTML = "";
+
+      listBulan.forEach(bln => {
+        const weeks = statePromesWeeks[semKey][bln] || ["2x", "2x", "2x", "2x", "2x"];
+        
+        let card = document.createElement('div');
+        card.className = "p-3 bg-white border rounded-xl shadow-2xs";
+        
+        let selectHtml = weeks.map((val, wIdx) => `
+          <div>
+            <span class="text-[10px] font-bold text-slate-400 block mb-1">M${wIdx + 1}</span>
+            <select class="w-full text-[10px] border rounded p-1 font-semibold ${val.includes('x')?'text-emerald-700 bg-emerald-50':val.includes('Libur')?'text-red-600 bg-red-50':'text-amber-700 bg-amber-50'}" onchange="updatePromesWeekVal('${semKey}', '${bln}', ${wIdx}, this.value)">
+              ${opsiMingguList.map(opt => `<option value="${opt}" ${val===opt?'selected':''}>${opt}</option>`).join('')}
+            </select>
+          </div>
+        `).join('');
+
+        card.innerHTML = `
+          <h4 class="font-bold text-xs text-amber-900 border-b pb-2 mb-3 text-center uppercase tracking-wide">${bln}</h4>
+          <div class="grid grid-cols-5 gap-1 text-center">
+            ${selectHtml}
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    function updatePromesWeekVal(semKey, bln, wIdx, val) {
+      statePromesWeeks[semKey][bln][wIdx] = val;
+      renderPromesWeeks();
+    }
+
+    function applyDefaultPromesWeeks() {
+      const semNum = document.getElementById('pm_pilih_semester').value;
+      const semKey = semNum === "1" ? "sem1" : "sem2";
+      const val = document.getElementById('pm_default_kbm').value;
+      const listBulan = semNum === "1" ? ["Juli", "Agustus", "September", "Oktober", "November", "Desember"] : ["Januari", "Februari", "Maret", "April", "Mei", "Juni"];
+
+      listBulan.forEach(bln => statePromesWeeks[semKey][bln] = [val, val, val, val, val]);
+      renderPromesWeeks();
+    }
+
+    // --- GENERATE ALL DOCUMENTS FINAL ---
+    function generateDokumenFinal() {
+      // Ambil Nilai Form / Placeholder Fallback
+      const getVal = (id, ph) => document.getElementById(id).value.trim() || ph;
+
+      const guru = getVal('inf_guru_nama', 'Wiryo, S.Pd');
+      const guruNip = getVal('inf_guru_nip', '19900809 202221 1 003');
+      const kepsek = getVal('inf_kepsek_nama', 'Fadli Rohul Ihsan, S.Pd');
+      const kepsekNip = getVal('inf_kepsek_nip', '19840121 200902 1 007');
+      const sekolah = getVal('inf_sekolah', 'SD Negeri Teluk Santong');
+      const mapel = getVal('inf_mapel', 'Pendidikan Pancasila');
+      const kelas = getVal('inf_kelas', 'A / II (dua)');
+      const tahun = getVal('inf_tahun', '2026/2027');
+      const tempatTgl = getVal('inf_tempat_tgl', 'Teluk Santong, 15 Juli 2026');
+
+      // Template Identitas Header Dokumen
+      const getHeaderIdentitas = (judul, semText) => `
+        <div style="text-align: center; margin-bottom: 20px;">
+          <h2 style="margin: 0; font-size: 14pt; font-weight: bold; text-transform: uppercase;"><b>${judul}</b></h2>
+          <h3 style="margin: 5px 0 0 0; font-size: 12pt; font-weight: bold; text-transform: capitalize;">Mata Pelajaran: ${mapel}</h3>
+        </div>
+        <table style="width: 100%; margin-bottom: 15px; border-collapse: collapse; font-family: 'Times New Roman', serif; font-size: 11pt; border: none; line-height: 1.1;">
+          <tr>
+            <td style="width: 18%; border: none; padding: 0; margin: 0;">Nama Penyusun</td>
+            <td style="width: 2%; border: none; padding: 0; margin: 0;">:</td>
+            <td style="width: 80%; border: none; padding: 0; margin: 0;">${guru}</td>
+          </tr>
+          <tr>
+            <td style="border: none; padding: 0; margin: 0;">Nama Sekolah</td>
+            <td style="border: none; padding: 0; margin: 0;">:</td>
+            <td style="border: none; padding: 0; margin: 0;">${sekolah}</td>
+          </tr>
+          <tr>
+            <td style="border: none; padding: 0; margin: 0;">Fase / Kelas</td>
+            <td style="border: none; padding: 0; margin: 0;">:</td>
+            <td style="border: none; padding: 0; margin: 0;">${kelas}</td>
+          </tr>
+          <tr>
+            <td style="border: none; padding: 0; margin: 0;">Semester</td>
+            <td style="border: none; padding: 0; margin: 0;">:</td>
+            <td style="border: none; padding: 0; margin: 0;">${semText}</td>
+          </tr>
+          <tr>
+            <td style="border: none; padding: 0; margin: 0;">Tahun Pelajaran</td>
+            <td style="border: none; padding: 0; margin: 0;">:</td>
+            <td style="border: none; padding: 0; margin: 0;">${tahun}</td>
+          </tr>
+        </table>
+      `;
+
+      // Template Tanda Tangan
+      const ttdHTML = `
+        <table style="width: 100%; border: none; margin-top: 25px; border-collapse: collapse; font-family: 'Times New Roman', serif; font-size: 11pt;">
+          <tr>
+            <td style="border: none; text-align: center; width: 50%; vertical-align: top;">
+              Mengetahui,<br>
+              Kepala Sekolah<br><br><br><br><br>
+              <b><u>${kepsek}</u></b><br>
+              NIP. ${kepsekNip}
+            </td>
+            <td style="border: none; text-align: center; width: 50%; vertical-align: top;">
+              ${tempatTgl}<br>
+              Guru Mata Pelajaran<br><br><br><br><br>
+              <b><u>${guru}</u></b><br>
+              NIP. ${guruNip}
+            </td>
+          </tr>
+        </table>
+      `;
+
+      // --- DOKUMEN 1: ANALISIS HARI BELAJAR EFEKTIF ---
+      const jml = appState.jmlPertemuan;
+      let headersJadwal = appState.jadwalConfigs.map(c => `<th colspan="2">${c.hari}</th>`).join('');
+      let subHeadersJadwal = appState.jadwalConfigs.map(() => `<th>Hari Efektif</th><th>Jml JP</th>`).join('');
+
+      let buildAnalisisTable = (analisisData, semTitle) => {
+        let rows = "";
+        let sums_HE = Array(jml).fill(0);
+        let sums_JP = Array(jml).fill(0);
+        let totalPertemuan = 0, totalJP = 0;
+
+        analisisData.forEach(item => {
+          rows += `<tr><td style="text-align: left; font-weight: bold;">${item.bulan}</td>`;
+          for(let i=0; i<jml; i++) {
+            let he = item.hariEfektif[i] || 0;
+            let jp = he * appState.jadwalConfigs[i].jp;
+            sums_HE[i] += he; sums_JP[i] += jp;
+            totalPertemuan += he; totalJP += jp;
+            rows += `<td style="text-align: center;">${he}</td><td style="text-align: center; font-weight: bold;">${jp}</td>`;
+          }
+          rows += `</tr>`;
+        });
+
+        let sumCols = "";
+        for(let i=0; i<jml; i++){
+          sumCols += `<td style="text-align: center; font-weight: bold;">${sums_HE[i]}</td><td style="text-align: center; font-weight: bold;">${sums_JP[i]}</td>`;
+        }
+
+        return `
+          <h3 style="font-size: 11pt; font-weight: bold; margin: 10px 0 5px 0;">SEMESTER ${semTitle}</h3>
+          <table class="word-table">
+            <thead>
+              <tr><th rowspan="2" style="width: 20%;">Bulan</th>${headersJadwal}</tr>
+              <tr>${subHeadersJadwal}</tr>
+            </thead>
+            <tbody>
+              ${rows}
+              <tr style="font-weight: bold; background-color: #f9fafb;"><td style="text-align: right;">Jumlah</td>${sumCols}</tr>
+              <tr style="font-weight: bold;"><td style="text-align: right;">Total Pertemuan</td><td colspan="${jml*2}" style="text-align: center;">${totalPertemuan} Pertemuan</td></tr>
+              <tr style="font-weight: bold; background-color: #f3f4f6;"><td style="text-align: right;">Total JP</td><td colspan="${jml*2}" style="text-align: center;">${totalJP} JP</td></tr>
+            </tbody>
+          </table>
+        `;
+      };
+
+      let htmlDocAnalisis = `
+        <div id="section-doc-analisis">
+          ${getHeaderIdentitas('ANALISIS HARI BELAJAR EFEKTIF', '1 (Ganjil) & 2 (Genap)')}
+          ${buildAnalisisTable(appState.analisisS1, '1 (GANJIL)')}
+          <br>
+          ${buildAnalisisTable(appState.analisisS2, '2 (GENAP)')}
+          ${ttdHTML}
+        </div>
+      `;
+
+      // --- DOKUMEN 2: PROGRAM TAHUNAN ---
+      let htmlProtaRows1 = "", totalJpS1 = 0;
+      stateATP.sem1.forEach((item, idx) => {
+        totalJpS1 += item.jp;
+        htmlProtaRows1 += `
+          <tr>
+            <td style="text-align: center;">${idx + 1}.</td>
+            <td>${item.atp.replace(/\n/g, '<br>')}</td>
+            <td>${item.materi.replace(/\n/g, '<br>')}</td>
+            <td style="text-align: center;">${item.jp} JP</td>
+          </tr>`;
+      });
+
+      let htmlProtaRows2 = "", totalJpS2 = 0;
+      stateATP.sem2.forEach((item, idx) => {
+        totalJpS2 += item.jp;
+        htmlProtaRows2 += `
+          <tr>
+            <td style="text-align: center;">${idx + 1}.</td>
+            <td>${item.atp.replace(/\n/g, '<br>')}</td>
+            <td>${item.materi.replace(/\n/g, '<br>')}</td>
+            <td style="text-align: center;">${item.jp} JP</td>
+          </tr>`;
+      });
+
+      let htmlDocProta = `
+        <div id="section-doc-prota" style="margin-top: 40px; border-top: 2px dashed #ccc; padding-top: 30px;">
+          ${getHeaderIdentitas('PROGRAM TAHUNAN', '1 (Ganjil) & 2 (Genap)')}
+          <table class="word-table">
+            <thead>
+              <tr>
+                <th style="width: 5%;">No</th>
+                <th style="width: 50%;">ALUR TUJUAN PEMBELAJARAN (ATP)</th>
+                <th style="width: 30%;">MATERI</th>
+                <th style="width: 15%;">Alokasi Waktu</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="background-color: #f3f4f6; font-weight: bold;"><td colspan="4" style="text-align: center;">SEMESTER 1 (GANJIL)</td></tr>
+              ${htmlProtaRows1}
+              <tr style="background-color: #f3f4f6; font-weight: bold;"><td colspan="4" style="text-align: center;">SEMESTER 2 (GENAP)</td></tr>
+              ${htmlProtaRows2}
+              <tr style="font-weight: bold; background-color: #e5e7eb;">
+                <td colspan="3" style="text-align: right;">JUMLAH JAM PELAJARAN TOTAL:</td>
+                <td style="text-align: center;">${totalJpS1 + totalJpS2} JP</td>
+              </tr>
+            </tbody>
+          </table>
+          ${ttdHTML}
+        </div>
+      `;
+
+      // --- DOKUMEN 3: PROGRAM SEMESTER (PROMES) ---
+      let generatePromesHTML = (semKey, semText, listBulan) => {
+        let monthHeaders = listBulan.map(b => `<th colspan="5" style="font-size: 9pt;">${b.toUpperCase()}</th>`).join('');
+        let weekHeaders = listBulan.map(() => `
+          <th style="width: 1.8%; font-size: 8pt;">1</th>
+          <th style="width: 1.8%; font-size: 8pt;">2</th>
+          <th style="width: 1.8%; font-size: 8pt;">3</th>
+          <th style="width: 1.8%; font-size: 8pt;">4</th>
+          <th style="width: 1.8%; font-size: 8pt;">5</th>
+        `).join('');
+
+        let kbmMeetingSlots = [];
+        let weekStatuses = [];
+        
+        listBulan.forEach(bln => {
+          let wStatus = statePromesWeeks[semKey][bln] || ["2x", "2x", "2x", "2x", "2x"];
+          wStatus.forEach((status) => {
+            weekStatuses.push(status);
+            let match = status.match(/^(\d)x$/);
+            if(match) {
+              let jmlTatapMuka = parseInt(match[1]);
+              for(let k=0; k<jmlTatapMuka; k++) {
+                kbmMeetingSlots.push({ weekAbsoluteIndex: weekStatuses.length - 1 });
+              }
+            }
+          });
+        });
+
+        let atpList = stateATP[semKey];
+        let totalJpSem = atpList.reduce((sum, item) => sum + item.jp, 0);
+
+        let slotPointer = 0;
+        let rowsHTML = "";
+
+        // Pelacak untuk memunculkan sel gabungan vertikal (rowspan) pada minggu non-KBM
+        let nonKbmMergedTracker = Array(30).fill(false);
+
+        atpList.forEach((item, atpIdx) => {
+          let assignedMeetings = 0;
+          if(totalJpSem > 0 && kbmMeetingSlots.length > 0) {
+            assignedMeetings = Math.round((item.jp / totalJpSem) * kbmMeetingSlots.length);
+          }
+          
+          if(atpIdx === atpList.length - 1) {
+            assignedMeetings = kbmMeetingSlots.length - slotPointer;
+          }
+
+          let cellTally = Array(30).fill(0);
+          for (let i = 0; i < assignedMeetings && slotPointer < kbmMeetingSlots.length; i++) {
+            let weekIdx = kbmMeetingSlots[slotPointer].weekAbsoluteIndex;
+            cellTally[weekIdx]++;
+            slotPointer++;
+          }
+
+          let weekCols = "";
+          weekStatuses.forEach((status, wIdx) => {
+            let checksCount = cellTally[wIdx];
+            
+            if(checksCount > 0) {
+              // Menyusun centang (v) secara vertikal kebawah jika > 1 pertemuan
+              let vMarks = Array(checksCount).fill('v').join('<br>');
+              weekCols += `<td style="text-align: center; font-weight: bold; font-size: 9pt; vertical-align: middle;">${vMarks}</td>`;
+            } else if (!status.includes('x')) {
+              // Jika minggu ini Non-KBM, gabungkan sel ke bawah (Rowspan) di baris pertama ATP
+              if(atpIdx === 0) {
+                let bgClass = "bg-non-kbm-gray";
+                let labelText = status;
+
+                if(status === "STS") { bgClass = "bg-sts-red"; labelText = "SUMATIF TENGAH SEMESTER"; }
+                else if(status === "SAS") { bgClass = "bg-sas-purple"; labelText = "SUMATIF AKHIR SEMESTER"; }
+                else if(status === "Pembagian Rapor") { bgClass = "bg-rapor-yellow"; labelText = "PEMBAGIAN RAPOR"; }
+                else if(status === "Libur Semester") { bgClass = "bg-libur-blue"; labelText = "LIBUR SEMESTER"; }
+                else if(status === "Libur") { bgClass = "bg-non-kbm-gray"; labelText = ""; }
+                else if(status === "MPLS") { bgClass = "bg-mpls-pink"; labelText = "MPLS"; }
+
+                let contentHTML = labelText ? `<div class="vertical-text" style="mso-layout-flow-alt: bottom-to-top; writing-mode: tb-rl;">${labelText}</div>` : '';
+
+                // Memasukkan style layout-flow MS Word langsung ke tag <td> untuk memastikan terbaca Word
+                weekCols += `
+                  <td rowspan="${atpList.length + 1}" class="${bgClass}" style="width: 25px; padding:0; text-align: center; vertical-align: middle; mso-layout-flow-alt: bottom-to-top; writing-mode: tb-rl;">
+                    ${contentHTML}
+                  </td>
+                `;
+                nonKbmMergedTracker[wIdx] = true;
+              } else if (!nonKbmMergedTracker[wIdx]) {
+                weekCols += `<td></td>`;
+              }
+            } else {
+              weekCols += `<td></td>`;
+            }
+          });
+
+          rowsHTML += `
+            <tr>
+              <td style="text-align: center; vertical-align: middle;">${atpIdx + 1}.</td>
+              <td style="vertical-align: middle;">${item.atp}</td>
+              <td style="text-align: center; vertical-align: middle;">${item.jp} JP</td>
+              ${weekCols}
+            </tr>
+          `;
+        });
+
+        // Baris Jumlah JP Paling Bawah
+        rowsHTML += `
+          <tr style="font-weight: bold; background-color: #f8fafc;">
+            <td colspan="2" style="text-align: center;">Jumlah JP</td>
+            <td style="text-align: center;">${totalJpSem} JP</td>
+            ${weekStatuses.map((st, idx) => nonKbmMergedTracker[idx] ? '' : '<td></td>').join('')}
+          </tr>
+        `;
+
+        return `
+          ${getHeaderIdentitas('PROGRAM SEMESTER', semText)}
+          <table class="word-table" style="font-size: 9pt;">
+            <thead>
+              <tr>
+                <th rowspan="2" style="width: 3%;">No.</th>
+                <th rowspan="2" style="width: 32%;">Alur Tujuan Pembelajaran (ATP)</th>
+                <th rowspan="2" style="width: 7%;">Waktu</th>
+                ${monthHeaders}
+              </tr>
+              <tr>${weekHeaders}</tr>
+            </thead>
+            <tbody>
+              ${rowsHTML}
+            </tbody>
+          </table>
+          ${ttdHTML}
+        `;
+      };
+
+      let htmlDocPromes = `
+        <div id="section-doc-promes" style="margin-top: 40px; border-top: 2px dashed #ccc; padding-top: 30px; overflow-x: auto;">
+          <div style="min-width: 29.7cm;">
+            ${generatePromesHTML('sem1', '1 (Ganjil)', ["Juli", "Agustus", "September", "Oktober", "November", "Desember"])}
+          </div>
+        </div>
+      `;
+
+      // Gabungkan Semua ke Canvas Preview
+      document.getElementById('document-preview-canvas').innerHTML = htmlDocAnalisis + htmlDocProta + htmlDocPromes;
+      
+      // Sembunyikan Form & Tampilkan Canvas Preview
+      document.getElementById('form-container').classList.add('hidden');
+      document.getElementById('navigation-tabs').classList.add('hidden');
+      document.getElementById('preview-section').classList.remove('hidden');
+      document.getElementById('preview-section').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // --- FITUR DOWNLOAD EXPORT MS WORD TERPISAH (.DOC) ---
+    function exportWord(docType) {
+      let targetElementId = "";
+      let filename = "";
+      let isLandscape = false;
+      let docFontSize = "12pt";
+
+      if(docType === 'analisis') {
+        targetElementId = "section-doc-analisis";
+        filename = "Analisis_Hari_Belajar_Efektif.doc";
+        docFontSize = "12pt";
+      } else if(docType === 'prota') {
+        targetElementId = "section-doc-prota";
+        filename = "Program_Tahunan_Prota.doc";
+        docFontSize = "12pt";
+      } else if(docType === 'promes') {
+        targetElementId = "section-doc-promes";
+        filename = "Program_Semester_Promes.doc";
+        isLandscape = true; // Set orientasi Landscape khusus Promes
+        docFontSize = "11pt";
+      }
+
+      const content = document.getElementById(targetElementId).innerHTML;
+
+      // CSS Khusus untuk MS Word dengan Dukungan Landscape / Portrait
+      const preHtml = `
+        <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+        <head>
+          <meta charset='utf-8'>
+          <title>Export Document</title>
+          <style>
+            @page Section1 {
+              size: ${isLandscape ? '29.7cm 21cm' : '21cm 29.7cm'};
+              margin: 1.5cm 1.5cm 1.5cm 1.5cm;
+              mso-page-orientation: ${isLandscape ? 'landscape' : 'portrait'};
+            }
+            div.Section1 { page: Section1; }
+            table { border-collapse: collapse; width: 100%; font-family: 'Times New Roman', serif; }
+            td, th { border: 1px solid black; padding: 4px 5px; font-size: ${docFontSize}; vertical-align: middle; }
+            th { background-color: #f3f4f6; text-align: center; font-weight: bold; }
+            
+            /* Class Warna Warna Promes di MS Word */
+            .bg-non-kbm-gray { background-color: #d1d5db !important; }
+            .bg-sts-red { background-color: #ef4444 !important; color: white !important; }
+            .bg-sas-purple { background-color: #8b5cf6 !important; color: white !important; }
+            .bg-rapor-yellow { background-color: #eab308 !important; color: black !important; }
+            .bg-libur-blue { background-color: #2563eb !important; color: white !important; }
+            .bg-libur-soft { background-color: #e5e7eb !important; }
+            .bg-mpls-pink { background-color: #ec4899 !important; color: white !important; }
+
+            .vertical-text {
+              mso-layout-flow-alt: bottom-to-top;
+              writing-mode: tb-rl;
+              text-align: center;
+              font-weight: bold;
+              font-size: 9pt;
+              white-space: nowrap;
+            }
+          </style>
+        </head>
+        <body>
+          <div class="Section1">
+      `;
+      const postHtml = `</div></body></html>`;
+
+      const blob = new Blob(['\ufeff', preHtml + content + postHtml], { type: 'application/msword' });
+      const downloadLink = document.createElement("a");
+      downloadLink.href = URL.createObjectURL(blob);
+      downloadLink.download = filename;
+      document.body.appendChild(downloadLink);
+      downloadLink.click();
+      document.body.removeChild(downloadLink);
+    }
+  </script>
+</body>
+</html>
